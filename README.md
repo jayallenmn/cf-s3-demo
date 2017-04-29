@@ -8,13 +8,13 @@ This is a simple example of using Softlayer S3 Object Storage for asset storage.
 
 ```yaml
 s3:
-  aws_access_key: your-aws-access-key
-  aws_secret_key: your-aws-secret-key
+  aws_access_key: your-access-key
+  aws_secret_key: your-secret-key
   region: the-region-where-your-buckets-are
   bucket: the-bucket-name-you-want-to-use
-  endpoint: s3-compatible-endpoint (optional)
-  base-url: public-base-url-for-uploaded-objects (optional)
-  path-style-access: true-or-false (optional, default: false)
+  endpoint: s3-compatible-endpoint 
+  base-url: public-base-url-for-uploaded-objects 
+  path-style-access: true-or-false (set to true for Softlayer)
 mysql:
   driver: com.mysql.jdbc.Driver
   url: jdbc:mysql://localhost:3306/mysql_db
@@ -48,9 +48,9 @@ Assuming you already have an account at http://www.bluemix.net
     * `secretKey`
     * `region`
     * `bucket`
-    * `endpoint` (optional)
-    * `baseUrl` (optional)
-    * `pathStyleAccess` (NOT optional, set to true)
+    * `endpoint` 
+    * `baseUrl` 
+    * `pathStyleAccess` (set to true)
 ```
 $ cf create-user-provided-service s3-service -p '{"accessKey":"1234","secretKey":"5678","region":"us-west-1","bucket":"cf-s3-bucket"}'
 ```
