@@ -1,6 +1,6 @@
 # CF S3 Demo
 
-This is a simple example of using Amazon S3 (or a different S3-compatible service) for asset storage. It is an image catalog to which you can upload images and see them on the main page.
+This is a simple example of using Softlayer S3 Object Storage for asset storage. It is an image catalog to which you can upload images and see them on the main page.
 
 ## Running Locally
 
@@ -19,7 +19,7 @@ mysql:
   driver: com.mysql.jdbc.Driver
   url: jdbc:mysql://localhost:3306/mysql_db
   username: mysql_db
-  password: mysql_pw</code></pre>
+  password: mysql_pw
 ```
 
 * Assemble the app.
@@ -31,20 +31,17 @@ $ ./gradlew assemble
 * Run it.
 
 ```
-$ java -jar build/libs/cf-s3-demo.jar
+$ java -jar build/libs/cf-s3-demo.jar 
 ```
 
 * Browse to `http://localhost:8080`
 
-## Running on Cloud Foundry
+## Running on Bluemix
 
-Assuming you already have an account at http://run.pivotal.io:
+Assuming you already have an account at http://www.bluemix.net
 
-* Create a ClearDB service.
+* Create a Compose Mysql service in the Bluemix UI.
 
-```
-$ cf create-service cleardb spark mysql-service
-```
 
 * Create a user-provided service, making sure its name begins with "s3". It should have the following credentials (assign values appropriate for your environment):
     * `accessKey`
@@ -53,7 +50,7 @@ $ cf create-service cleardb spark mysql-service
     * `bucket`
     * `endpoint` (optional)
     * `baseUrl` (optional)
-    * `pathStyleAccess` (optional, default: false)
+    * `pathStyleAccess` (NOT optional, set to true)
 ```
 $ cf create-user-provided-service s3-service -p '{"accessKey":"1234","secretKey":"5678","region":"us-west-1","bucket":"cf-s3-bucket"}'
 ```
@@ -63,23 +60,23 @@ $ cf create-user-provided-service s3-service -p '{"accessKey":"1234","secretKey"
 $ ./gradlew assemble
 ```
 
-* Push it to Pivotal Cloud Foundry. It will fail because services are not bound yet.
+* Push it to Bluemix. 
 
 ```
-$ cf push cf-s3-123 -p build/libs/cf-s3-demo.jar
+$ cf push cf-s3-123 -p build/libs/cf-s3-demo.jar --no-start
 ```
 
 * Bind services to the app.
 
 ```
-$ cf bind-service cf-s3-123 mysql-service
-$ cf bind-service cf-s3-123 s3-service
+$ cf bind-service bmx-s3-123 my-compose-mysql-service
+$ cf bind-service bmx-s3-123 s3-service
 ```
 
-* Restage the app.
+* Start the app.
 
 ```
-$ cf restage cf-s3-123
+$ cf start bmx-s3-123
 ```
 
-* Browse to the given URL (e.g. `http://cf-s3-123.cfapps.io`).
+* Browse to the given URL (e.g. `http://bmx-s3-123.mybluemix.net`).
