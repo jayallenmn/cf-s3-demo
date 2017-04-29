@@ -63,7 +63,7 @@ $ ./gradlew assemble
 * Push it to Bluemix. 
 
 ```
-$ cf push cf-s3-123 -p build/libs/cf-s3-demo.jar --no-start
+$ cf push bmx-s3-123 -p build/libs/cf-s3-demo.jar --no-start
 ```
 
 * Bind services to the app.
