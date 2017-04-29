@@ -11,6 +11,7 @@ import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.CreateBucketRequest;
 import com.gopivotal.cf.samples.s3.connector.cloudfoundry.S3ServiceInfo;
 import com.gopivotal.cf.samples.s3.repository.S3;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.cloud.service.AbstractServiceConnectorCreator;
@@ -38,14 +39,19 @@ public class S3ServiceConnectorCreator extends AbstractServiceConnectorCreator<S
         }
 
         AmazonS3 amazonS3 = builder.build();
-
+        
+        // @JA - have to explicitly set type to us-standard.  Also don't quit when the bucket exists, geez.
         try {
             amazonS3.createBucket(
-                    new CreateBucketRequest(serviceInfo.getBucket()).withCannedAcl(CannedAccessControlList.PublicRead)
+                    new CreateBucketRequest(serviceInfo.getBucket(),"us-standard").withCannedAcl(CannedAccessControlList.PublicRead)
             );
         } catch (AmazonServiceException e) {
-            if (!e.getErrorCode().equals("BucketAlreadyOwnedByYou")) {
-                throw e;
+            if (!e.getErrorCode().equals("BucketAlreadyOwnedByYou")) {               
+                System.out.println("You own this bucket already!");
+            }
+            else
+            {
+            	throw e;
             }
         }
         log.info("Using S3 Bucket: " + serviceInfo.getBucket());

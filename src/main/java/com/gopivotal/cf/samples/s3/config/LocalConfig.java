@@ -46,28 +46,38 @@ public class LocalConfig {
     public S3 s3() {
         AWSCredentials awsCredentials = new BasicAWSCredentials(s3Properties.getAccessKey(), s3Properties.getSecretKey());
 
+        
+        System.out.println("Access key is " + s3Properties.getAccessKey());
+        System.out.println("Secret key is " + s3Properties.getAccessKey());
+
+        
         AmazonS3ClientBuilder builder = AmazonS3ClientBuilder.standard()
                 .withCredentials(new AWSStaticCredentialsProvider(awsCredentials))
-                .withPathStyleAccessEnabled(s3Properties.getPathStyleAccess());
+                .withPathStyleAccessEnabled(s3Properties.getPathStyleAccess());  
 
         if (s3Properties.getEndpoint() != null) {
             // if a custom endpoint is set, we will ignore the region
             builder.withEndpointConfiguration(new AwsClientBuilder.EndpointConfiguration(
-                    s3Properties.getEndpoint(), "Standard"
+                    s3Properties.getEndpoint(), "Standard"  
             ));
         } else {
             builder.withRegion(s3Properties.getRegion());
         }
 
         AmazonS3 amazonS3 = builder.build();
-
+        
+       // @JA - have to explicitly set type to us-standard.  Also don't quit when the bucket exists, geez.
         try {
             amazonS3.createBucket(
-                    new CreateBucketRequest(s3Properties.getBucket()).withCannedAcl(CannedAccessControlList.PublicRead)
+                    new CreateBucketRequest(s3Properties.getBucket(),"us-standard").withCannedAcl(CannedAccessControlList.PublicRead)
             );
         } catch (AmazonServiceException e) {
             if (!e.getErrorCode().equals("BucketAlreadyOwnedByYou")) {
-                throw e;
+                System.out.println("You own this bucket already!");
+            }
+            else
+            {
+            	throw e;
             }
         }
         log.info("Using S3 Bucket: " + s3Properties.getBucket());
