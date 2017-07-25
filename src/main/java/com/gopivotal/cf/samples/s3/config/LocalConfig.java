@@ -72,12 +72,12 @@ public class LocalConfig {
                     new CreateBucketRequest(s3Properties.getBucket(),"us-standard").withCannedAcl(CannedAccessControlList.PublicRead)
             );
         } catch (AmazonServiceException e) {
-            if (!e.getErrorCode().equals("BucketAlreadyOwnedByYou")) {
+            if (e.getErrorCode().equals("BucketAlreadyOwnedByYou")) {
                 System.out.println("You own this bucket already!");
             }
             else
             {
-            	throw e;
+            	//throw e;
             }
         }
         log.info("Using S3 Bucket: " + s3Properties.getBucket());
